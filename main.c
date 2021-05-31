@@ -8,10 +8,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-	
-
-
 int main(int argc, char* argv[])
 {
 #if defined(_WIN32) || defined(_WIN64)
