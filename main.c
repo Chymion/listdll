@@ -1,18 +1,28 @@
 /* 
-Author: Orane Adjali
-Date: 31/05/2021
+	Author: Orane Adjali
+	Date: 05/31/2021
+	Version: 0.2
 */
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
+
+	
+
+
 int main(int argc, char* argv[])
 {
-    /*=  "strings "$*" | grep -i '\.dll$' */
+#if defined(_WIN32) || defined(_WIN64)
+	printf("This program cannot run on Windows!\n");
+	printf("Terminating...\n");
+	return 0;
+#endif
 
  	if(argc == 1) {
-        printf("ERROR: You have to input one file...\n");
+        printf("List the dependencies of given PE executable or dll file\n");
+        printf("Usage: listdll [file]\n\n");
         return 0;
     }
 
@@ -23,30 +33,33 @@ int main(int argc, char* argv[])
     for(i = 1; i <= size; i++) {
         str = (char *)realloc(str, (v + strlen(argv[i])));
         strcat(str, argv[i]);
-        //strcat(str, " ");
     }
 
 
     char* command = "strings \"";
-    char* pipe = "\" | grep -i '\\.dll$'";
-    //char* buffer[100];
-
-    char inter[100];
-    strcat(inter, command);
-    strcat(inter, str);
-    strcat(inter, pipe);
-
-    system(inter);
-
-   	//strcat()
-    //system()
+    char* secondPart = "\" | grep -i '\\.dll$' > /tmp/temp.txt";
+ 
     char buffer[100];
-    char* find = "find ~/* -name \"*";
-    char* endString = "*\" | grep ."; 
-    strcat(buffer, find);
+    strcat(buffer, command);
+    strcat(buffer, str);
+    strcat(buffer, secondPart);
+    system(buffer);
 
+	FILE * fptr;
+	int c;
 
+    fptr = fopen("/tmp/temp.txt", "r");  
+                                    
+    while(1){
+        c = fgetc(fptr);
+        if(c!= EOF)
+            printf("%c", c);        
+        else
+            break;                  
+    }
+
+    fclose(fptr);                 
+    remove("/tmp/temp.txt");      
 
     return 0;
-
 }
